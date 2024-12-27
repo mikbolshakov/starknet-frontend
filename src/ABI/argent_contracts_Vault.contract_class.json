@@ -1,0 +1,96 @@
+{
+  "abi": [
+    {
+      "type": "impl",
+      "name": "Vault",
+      "interface_name": "argent_contracts::vault::IVault"
+    },
+    {
+      "type": "struct",
+      "name": "core::integer::u256",
+      "members": [
+        { "name": "low", "type": "core::integer::u128" },
+        { "name": "high", "type": "core::integer::u128" }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "argent_contracts::vault::IVault",
+      "items": [
+        {
+          "type": "function",
+          "name": "deposit",
+          "inputs": [{ "name": "amount", "type": "core::integer::u256" }],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "withdraw",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_contract_balance",
+          "inputs": [],
+          "outputs": [{ "type": "core::integer::u256" }],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": [
+        {
+          "name": "token",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "admin",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "argent_contracts::vault::Vault::Deposited",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "user",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        { "name": "amount", "type": "core::integer::u256", "kind": "data" }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "argent_contracts::vault::Vault::Withdrawn",
+      "kind": "struct",
+      "members": [
+        { "name": "amount", "type": "core::integer::u256", "kind": "data" }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "argent_contracts::vault::Vault::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Deposited",
+          "type": "argent_contracts::vault::Vault::Deposited",
+          "kind": "nested"
+        },
+        {
+          "name": "Withdrawn",
+          "type": "argent_contracts::vault::Vault::Withdrawn",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]
+}

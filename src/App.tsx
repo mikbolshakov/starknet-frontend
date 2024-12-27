@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ArgentTMA, SessionAccountInterface } from "@argent/tma-wallet";
-import { Contract, AccountInterface } from "starknet";
+import { Contract, AccountInterface, Call } from "starknet";
 import { ethers } from "ethers";
-import artifact from "./ABI/argent_contracts_MockERC20.contract_class.json";
+import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 
 const ABI = artifact.abi;
@@ -15,8 +15,8 @@ const argentTMA = ArgentTMA.init({
     allowedMethods: [
       {
         contract:
-          "0x058f412f1d9c4d5efa70a4b9ef528b632b1532307770251b9fd61e32c57d3b5b",
-        selector: "mint",
+          "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd",
+        selector: "deposit",
       },
     ],
     validityDays: 90,
@@ -40,7 +40,7 @@ function App() {
 
         const contractInstance = new Contract(
           ABI,
-          "0x058f412f1d9c4d5efa70a4b9ef528b632b1532307770251b9fd61e32c57d3b5b",
+          "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd",
           account as unknown as AccountInterface
         );
 
@@ -55,30 +55,30 @@ function App() {
     connect();
   }, []);
 
-  async function handleMint() {
+  async function handleDeposit() {
     console.log("0");
     if (!contract || !isConnected || !account) return;
     setIsLoading(true);
 
-    // const call: Call = {
-    //   contractAddress: contract.address,
-    //   entrypoint: "mint",
-    //   calldata: [],
-    // };
+    const call: Call = {
+      contractAddress: contract.address,
+      entrypoint: "deposit",
+      calldata: [],
+    };
 
     try {
-      //   const fees = await account.estimateInvokeFee([call]);
-      //   const tx = await contract["mint"]({
-      //     maxFee: fees?.suggestedMaxFee
-      //       ? BigInt(fees.suggestedMaxFee) * 2n
-      //       : undefined,
-      //   });
+        const fees = await account.estimateInvokeFee([call]);
+        const tx = await contract["deposit"]({
+          maxFee: fees?.suggestedMaxFee
+            ? BigInt(fees.suggestedMaxFee) * 2n
+            : undefined,
+        });
 
-      //   await argentTMA.provider.waitForTransaction(tx.transaction_hash);
+        await argentTMA.provider.waitForTransaction(tx.transaction_hash);
 
-      await contract.mint(ethers.parseEther("4"));
+      await contract.deposit(ethers.parseEther("1.5"));
     } catch (error) {
-      console.error("Mint transaction failed", error);
+      console.error("Deposit transaction failed", error);
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +86,8 @@ function App() {
 
   async function handleConnect() {
     try {
-      await argentTMA.requestConnection("tamagochi_connection");
+      await argentTMA.requestConnection("vault_connection");
+      setIsConnected(true);
     } catch (error) {
       console.error("Connection failed:", error);
     }
@@ -96,6 +97,7 @@ function App() {
     try {
       await argentTMA.clearSession();
       setAccount(undefined);
+      setIsConnected(false);
     } catch (error) {
       console.error("Failed to disconnect:", error);
     }
@@ -111,7 +113,7 @@ function App() {
             Account address: <code>{account?.address}</code>
           </p>
           <button onClick={handleDisconnect}>Clear Session</button>
-          <button onClick={handleMint}>Mint</button>
+          <button onClick={handleDeposit}>Deposit</button>
         </div>
       )}
       {isLoading && (
