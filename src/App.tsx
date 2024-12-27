@@ -86,7 +86,7 @@ function App() {
 
   async function handleConnect() {
     try {
-      await argentTMA.requestConnection("vault_connection");
+    //   await argentTMA.requestConnection("vault_connection");
       setIsConnected(true);
     } catch (error) {
       console.error("Connection failed:", error);
