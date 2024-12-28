@@ -1,7 +1,7 @@
 FROM node:18 as node-builder
 
 ENV VITE_TELEGRAM_APP_NAME=TEST_BOT
-ENV VITE_TELEGRAM_APP_URL=https://t.me/dev_satoshi_board_bot
+ENV VITE_TELEGRAM_APP_URL=https://t.me/SatoshiTestENVdev_bot/myapp
 
 RUN npm install -g npm
 
@@ -10,6 +10,7 @@ WORKDIR /tmp/app
 
 COPY package.json ./
 COPY tsconfig.json ./
+COPY index.html ./
 COPY tsconfig.app.json ./
 COPY vite.config.ts ./
 COPY tsconfig.node.json ./
@@ -23,7 +24,7 @@ RUN pnpm run build
 
 FROM nginx:alpine as nginx
 
-COPY --from=node-builder /tmp/app/build /usr/share/nginx/html
+COPY --from=node-builder /tmp/app/dist /usr/share/nginx/html
 RUN apk --no-cache add gettext bash
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
