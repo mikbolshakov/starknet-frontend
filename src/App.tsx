@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { ArgentTMA, SessionAccountInterface } from "@argent/tma-wallet";
-import { Contract, AccountInterface, Call } from "starknet";
+import { Contract, AccountInterface } from "starknet";
 import { ethers } from "ethers";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 
 const ABI = artifact.abi;
+const vaultAddress =
+  "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
 
 const argentTMA = ArgentTMA.init({
   environment: "sepolia", // "sepolia" | "mainnet"
@@ -14,8 +16,7 @@ const argentTMA = ArgentTMA.init({
   sessionParams: {
     allowedMethods: [
       {
-        contract:
-          "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd",
+        contract: vaultAddress,
         selector: "deposit",
       },
     ],
@@ -25,14 +26,15 @@ const argentTMA = ArgentTMA.init({
 
 function App() {
   const [account, setAccount] = useState<SessionAccountInterface | undefined>();
+  const [vaultContract, setVaultContract] = useState<Contract | undefined>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [contract, setContract] = useState<Contract | undefined>();
 
   useEffect(() => {
     async function connect() {
       try {
         const res = await argentTMA.connect();
+        console.log("res", res);
         if (!res) return;
 
         const accountInstance = res.account;
@@ -40,88 +42,85 @@ function App() {
 
         const contractInstance = new Contract(
           ABI,
-          "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd",
+          vaultAddress,
           account as unknown as AccountInterface
         );
 
         setAccount(accountInstance);
-        setContract(contractInstance);
+        setVaultContract(contractInstance);
         setIsConnected(true);
-      } catch (error) {
-        console.error("Failed to connect:", error);
+      } catch (err) {
+        console.error("My App: Failed to useEffect connect:", err);
       }
     }
 
     connect();
   }, []);
 
-  async function handleDeposit() {
-    console.log("0");
-    if (!contract || !isConnected || !account) return;
-    setIsLoading(true);
-
-    const call: Call = {
-      contractAddress: contract.address,
-      entrypoint: "deposit",
-      calldata: [],
-    };
-
+  const handleConnectButton = async () => {
     try {
-        const fees = await account.estimateInvokeFee([call]);
-        const tx = await contract["deposit"]({
-          maxFee: fees?.suggestedMaxFee
-            ? BigInt(fees.suggestedMaxFee) * 2n
-            : undefined,
-        });
-
-        await argentTMA.provider.waitForTransaction(tx.transaction_hash);
-
-      await contract.deposit(ethers.parseEther("1.5"));
-    } catch (error) {
-      console.error("Deposit transaction failed", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleConnect() {
-    try {
-    //   await argentTMA.requestConnection("vault_connection");
+      await argentTMA.requestConnection({
+        callbackData: "custom_callback_data",
+        approvalRequests: [
+          {
+            tokenAddress:
+              "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", // STRK
+            amount: ethers.parseEther("100"),
+            spender: vaultAddress,
+          },
+        ],
+      });
       setIsConnected(true);
     } catch (error) {
-      console.error("Connection failed:", error);
+      console.error("My App: Failed to connect:", error);
     }
-  }
+  };
 
-  const handleDisconnect = async () => {
+  const handleClearSessionButton = async () => {
     try {
       await argentTMA.clearSession();
       setAccount(undefined);
       setIsConnected(false);
     } catch (error) {
-      console.error("Failed to disconnect:", error);
+      console.error("My App: Failed to clear session:", error);
     }
   };
 
+  async function handleDeposit() {
+    if (!vaultContract || !isConnected || !account) return;
+
+    setIsLoading(true);
+    try {
+      await vaultContract.deposit(ethers.parseEther("1.5"));
+    } catch (error) {
+      console.error("My App: Deposit transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <div>
-      <h2>TMA Game</h2>
-      {!isConnected && <button onClick={handleConnect}>Connect</button>}
-      {isConnected && (
-        <div>
-          <p>
-            Account address: <code>{account?.address}</code>
-          </p>
-          <button onClick={handleDisconnect}>Clear Session</button>
-          <button onClick={handleDeposit}>Deposit</button>
-        </div>
-      )}
-      {isLoading && (
-        <div className="loader-overlay">
-          <div className="loader"></div>
-        </div>
-      )}
-    </div>
+    <>
+      <div>
+        <h2>My App TMA Game</h2>
+        {!isConnected && <button onClick={handleConnectButton}>Connect</button>}
+
+        {isConnected && (
+          <div>
+            <p>
+              Account address: <code>{account?.address}</code>
+            </p>
+            <button onClick={handleClearSessionButton}>Clear Session</button>
+            <button onClick={handleDeposit}>Deposit</button>
+          </div>
+        )}
+        {isLoading && (
+          <div className="loader-overlay">
+            <div className="loader"></div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
