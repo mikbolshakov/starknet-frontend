@@ -1,33 +1,22 @@
 import { useEffect, useState } from "react";
-import { ArgentTMA, SessionAccountInterface } from "@argent/tma-wallet";
+import { SessionAccountInterface } from "@argent/tma-wallet";
 import { Contract, AccountInterface } from "starknet";
 import { ethers } from "ethers";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
+import { executeContractAction, initWallet } from "./components/contracts";
 
 const ABI = artifact.abi;
 const vaultAddress =
   "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
 
-const argentTMA = ArgentTMA.init({
-  environment: "sepolia", // "sepolia" | "mainnet"
-  appName: import.meta.env.VITE_TELEGRAM_APP_NAME,
-  appTelegramUrl: import.meta.env.VITE_TELEGRAM_APP_URL,
-  sessionParams: {
-    allowedMethods: [
-      {
-        contract: vaultAddress,
-        selector: "deposit",
-      },
-    ],
-    validityDays: 90,
-  },
-});
+  const argentTMA = initWallet(vaultAddress);
+
+  let account: SessionAccountInterface | undefined;
+  let isConnected = false;
+  let contract: Contract | undefined;
 
 function App() {
-  const [account, setAccount] = useState<SessionAccountInterface | undefined>();
-  const [vaultContract, setVaultContract] = useState<Contract | undefined>();
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -37,18 +26,16 @@ function App() {
         console.log("res", res);
         if (!res) return;
 
-        const accountInstance = res.account;
-        if (accountInstance.getSessionStatus() !== "VALID") return;
+        account = res.account;
+        if (account.getSessionStatus() !== "VALID") return;
 
-        const contractInstance = new Contract(
+        contract = new Contract(
           ABI,
           vaultAddress,
           account as unknown as AccountInterface
         );
 
-        setAccount(accountInstance);
-        setVaultContract(contractInstance);
-        setIsConnected(true);
+        isConnected = true;
       } catch (err) {
         console.error("My App: Failed to useEffect connect:", err);
       }
@@ -60,7 +47,7 @@ function App() {
   const handleConnectButton = async () => {
     try {
       await argentTMA.requestConnection({
-        callbackData: "custom_callback_data",
+        callbackData: "vault_connection",
         approvalRequests: [
           {
             tokenAddress:
@@ -70,7 +57,7 @@ function App() {
           },
         ],
       });
-      setIsConnected(true);
+      isConnected = true;
     } catch (error) {
       console.error("My App: Failed to connect:", error);
     }
@@ -79,19 +66,26 @@ function App() {
   const handleClearSessionButton = async () => {
     try {
       await argentTMA.clearSession();
-      setAccount(undefined);
-      setIsConnected(false);
+      account = undefined;
+      isConnected = false;
+      contract = undefined;
     } catch (error) {
       console.error("My App: Failed to clear session:", error);
     }
   };
 
-  async function handleDeposit() {
-    if (!vaultContract || !isConnected || !account) return;
 
+  async function handleDeposit() {
+    if (!contract || !account) return
     setIsLoading(true);
     try {
-      await vaultContract.deposit(ethers.parseEther("1.5"));
+       await executeContractAction(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000000,
+      );
     } catch (error) {
       console.error("My App: Deposit transaction failed:", error);
     } finally {
