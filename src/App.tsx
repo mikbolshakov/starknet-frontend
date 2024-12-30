@@ -10,11 +10,11 @@ const ABI = artifact.abi;
 const vaultAddress =
   "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
 
-  const argentTMA = initWallet(vaultAddress);
+const argentTMA = initWallet(vaultAddress);
 
-  let account: SessionAccountInterface | undefined;
-  let isConnected = false;
-  let contract: Contract | undefined;
+let account: SessionAccountInterface | undefined;
+let isConnected = false;
+let contract: Contract | undefined;
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -74,17 +74,16 @@ function App() {
     }
   };
 
-
   async function handleDeposit() {
-    if (!contract || !account) return
+    if (!contract || !account) return;
     setIsLoading(true);
     try {
-       await executeContractAction(
+      await executeContractAction(
         contract,
         account,
         argentTMA,
         "deposit",
-        1000000000000000,
+        1000000000000000
       );
     } catch (error) {
       console.error("My App: Deposit transaction failed:", error);
