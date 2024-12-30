@@ -44,6 +44,7 @@ function App() {
   }, []);
 
   const handleConnectButton = async () => {
+    setIsLoading(true);
     try {
       await argentTMA.requestConnection({
         callbackData: "vault_connection",
@@ -51,7 +52,7 @@ function App() {
           {
             tokenAddress:
               "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", // STRK
-            amount: 1000000000000,
+            amount: BigInt(100000000000000000000n).toString(),
             spender: vaultAddress,
           },
         ],
@@ -59,6 +60,8 @@ function App() {
       isConnected = true;
     } catch (error) {
       console.error("My App: Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,7 +85,7 @@ function App() {
         account,
         argentTMA,
         "deposit",
-        1000000000
+        BigInt(100000000000000000n).toString()
       );
     } catch (error) {
       console.error("My App: Deposit transaction failed:", error);

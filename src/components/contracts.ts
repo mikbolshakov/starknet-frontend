@@ -22,7 +22,7 @@ export async function executeContractAction(
   account: SessionAccountInterface,
   argentTMA: ArgentTMA,
   action: string,
-  amount: number
+  amount: string
 ) {
   const call: Call = {
     contractAddress: contract.address,
