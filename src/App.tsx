@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { SessionAccountInterface } from "@argent/tma-wallet";
 import { Contract, AccountInterface } from "starknet";
-import { ethers } from "ethers";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 import { executeContractAction, initWallet } from "./components/contracts";
@@ -52,7 +51,7 @@ function App() {
           {
             tokenAddress:
               "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", // STRK
-            amount: ethers.parseEther("100"),
+            amount: 1000000000000,
             spender: vaultAddress,
           },
         ],
@@ -83,7 +82,7 @@ function App() {
         account,
         argentTMA,
         "deposit",
-        1000000000000000
+        1000000000
       );
     } catch (error) {
       console.error("My App: Deposit transaction failed:", error);
