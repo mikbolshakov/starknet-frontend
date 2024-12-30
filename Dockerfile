@@ -1,6 +1,6 @@
 FROM node:18 as node-builder
 
-ENV VITE_TELEGRAM_APP_NAME=TEST_BOT
+ENV VITE_TELEGRAM_APP_NAME=myapp
 ENV VITE_TELEGRAM_APP_URL=https://t.me/SatoshiTestENVdev_bot/myapp
 
 RUN npm install -g npm
