@@ -17,6 +17,14 @@ export const initWallet = (contractAddress: string) =>
     },
   });
 
+function toU256(amount: number) {
+  const bigIntAmount = BigInt(amount);
+  return {
+    low: bigIntAmount & BigInt(0xffffffffffffffffn),
+    high: bigIntAmount >> BigInt(128),
+  };
+}
+
 export async function executeContractAction(
   contract: Contract,
   account: SessionAccountInterface,
@@ -24,10 +32,12 @@ export async function executeContractAction(
   action: string,
   amount: number
 ) {
+  const u256Amount = toU256(amount);
+
   const call: Call = {
     contractAddress: contract.address,
     entrypoint: action,
-    calldata: [amount],
+    calldata: [u256Amount.low.toString(), u256Amount.high.toString()],
   };
 
   try {
