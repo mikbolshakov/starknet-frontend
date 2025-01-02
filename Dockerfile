@@ -1,7 +1,7 @@
 FROM node:18 as node-builder
 
-ENV VITE_TELEGRAM_APP_NAME=SatoshiTestENVdev
-ENV VITE_TELEGRAM_APP_URL=https://t.me/SatoshiTestENVdev_bot/SatoshiTestENVdev
+ENV VITE_TELEGRAM_APP_NAME=ArgentCon
+ENV VITE_TELEGRAM_APP_URL=https://t.me/SatoshiTestENVdev_bot/ArgentCon
 
 RUN npm install -g npm
 
