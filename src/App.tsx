@@ -52,7 +52,7 @@ function App() {
           {
             tokenAddress:
               "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", // STRK
-            amount: BigInt(100000000000000000000n).toString(),
+            amount: BigInt(100000000000000000n).toString(),
             spender: vaultAddress,
           },
         ],
@@ -106,9 +106,9 @@ function App() {
               Account address: <code>{account?.address}</code>
             </p>
             <button onClick={handleClearSessionButton}>Clear Session</button>
-            <button onClick={handleDeposit}>Deposit</button>
           </div>
         )}
+        <button onClick={handleDeposit}>Deposit</button>
         {isLoading && (
           <div className="loader-overlay">
             <div className="loader"></div>
