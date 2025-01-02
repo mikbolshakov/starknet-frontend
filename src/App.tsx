@@ -52,7 +52,7 @@ function App() {
           {
             tokenAddress:
               "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", // STRK
-            amount: BigInt(100000000000000000n).toString(),
+            amount: 3000000000000,
             spender: vaultAddress,
           },
         ],
@@ -66,6 +66,7 @@ function App() {
   };
 
   const handleClearSessionButton = async () => {
+    setIsLoading(true);
     try {
       await argentTMA.clearSession();
       account = undefined;
@@ -73,6 +74,8 @@ function App() {
       contract = undefined;
     } catch (error) {
       console.error("My App: Failed to clear session:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +88,7 @@ function App() {
         account,
         argentTMA,
         "deposit",
-        BigInt(100000000000000000n).toString()
+        1000000000000
       );
     } catch (error) {
       console.error("My App: Deposit transaction failed:", error);
@@ -93,6 +96,10 @@ function App() {
       setIsLoading(false);
     }
   }
+
+  const shortAddress = (address: string | null | undefined): string => {
+    return address ? `${address.slice(0, 6)}...${address.slice(-5)}` : "";
+  };
 
   return (
     <>
@@ -103,7 +110,7 @@ function App() {
         {isConnected && (
           <div>
             <p>
-              Account address: <code>{account?.address}</code>
+              Account address: <code>{shortAddress(account?.address)}</code>
             </p>
             <button onClick={handleClearSessionButton}>Clear Session</button>
           </div>
