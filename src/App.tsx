@@ -3,7 +3,18 @@ import { SessionAccountInterface } from "@argent/tma-wallet";
 import { Contract, AccountInterface } from "starknet";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
-import { executeContractAction, initWallet } from "./components/contracts";
+import {
+  executeContractAction_1,
+  executeContractAction_2,
+  executeContractAction_3,
+  executeContractAction_4,
+  executeContractAction_5,
+  executeContractAction_6,
+  executeContractAction_7,
+  executeContractAction_8,
+  executeContractAction_9,
+  initWallet,
+} from "./components/contracts";
 
 const ABI = artifact.abi;
 const vaultAddress =
@@ -79,11 +90,11 @@ function App() {
     }
   };
 
-  async function handleDeposit() {
+  async function handleDeposit_1() {
     if (!contract || !account) return;
     setIsLoading(true);
     try {
-      await executeContractAction(
+      await executeContractAction_1(
         contract,
         account,
         argentTMA,
@@ -91,7 +102,205 @@ function App() {
         1000000000000
       );
     } catch (error) {
-      console.error("My App: Deposit transaction failed:", error);
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_2() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_2(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        BigInt(1000000000000n).toString()
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_3() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_3(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000n
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_4() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_4(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_5() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_5(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        BigInt(1000000000000n).toString()
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_6() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_6(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000n
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_7() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_7(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_8() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_8(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        BigInt(1000000000000n).toString()
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_9() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_9(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000n
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_10() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_7(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_11() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_8(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        BigInt(1000000000000n).toString()
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_12() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_9(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000n
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +324,18 @@ function App() {
             <button onClick={handleClearSessionButton}>Clear Session</button>
           </div>
         )}
-        <button onClick={handleDeposit}>Deposit</button>
+        <button onClick={handleDeposit_1}>Deposit_1</button>
+        <button onClick={handleDeposit_2}>Deposit_2</button>
+        <button onClick={handleDeposit_3}>Deposit_3</button>
+        <button onClick={handleDeposit_4}>Deposit_4</button>
+        <button onClick={handleDeposit_5}>Deposit_5</button>
+        <button onClick={handleDeposit_6}>Deposit_6</button>
+        <button onClick={handleDeposit_7}>Deposit_7</button>
+        <button onClick={handleDeposit_8}>Deposit_8</button>
+        <button onClick={handleDeposit_9}>Deposit_9</button>
+        <button onClick={handleDeposit_10}>Deposit_10</button>
+        <button onClick={handleDeposit_11}>Deposit_11</button>
+        <button onClick={handleDeposit_12}>Deposit_12</button>
         {isLoading && (
           <div className="loader-overlay">
             <div className="loader"></div>
