@@ -29,7 +29,7 @@ export async function executeContractAction(
   const call: Call = {
     contractAddress: contract.address,
     entrypoint: action,
-    calldata: [u256Amount.low.toString(), u256Amount.high.toString()],
+    calldata: [u256Amount],
   };
 
   try {
