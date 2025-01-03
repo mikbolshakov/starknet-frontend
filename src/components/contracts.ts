@@ -20,8 +20,8 @@ export const initWallet = (contractAddress: string) =>
 function toU256(amount: number) {
   const bigIntAmount = BigInt(amount);
   return {
-    low: bigIntAmount & BigInt(0xffffffffffffffffn),
-    high: bigIntAmount >> BigInt(128),
+    low: bigIntAmount,
+    high: BigInt(0),
   };
 }
 
