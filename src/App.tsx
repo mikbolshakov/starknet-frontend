@@ -320,6 +320,30 @@ function App() {
     }
   }
 
+  async function handleDeposit_133() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit(1000000000000, 0);
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_134() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit("0xe8d4a51000", "0x0");
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function handleDeposit_14() {
     if (!contract || !account) return;
     setIsLoading(true);
@@ -387,6 +411,8 @@ function App() {
         <button onClick={handleDeposit_11}>Deposit_11</button>
         <button onClick={handleDeposit_12}>Deposit_12</button>
         <button onClick={handleDeposit_13}>Deposit_13</button>
+        <button onClick={handleDeposit_133}>Deposit_133</button>
+        <button onClick={handleDeposit_134}>Deposit_134</button>
         <button onClick={handleDeposit_14}>Deposit_14</button>
         <button onClick={handleDeposit_15}>Deposit_15</button>
         {isLoading && (
