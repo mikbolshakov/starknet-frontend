@@ -385,3 +385,65 @@ export async function executeContractAction_12(
     return false;
   }
 }
+
+export async function executeContractAction_14(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string,
+  amount: number
+) {
+  const call: Call = {
+    contractAddress: contract.address,
+    entrypoint: action,
+    calldata: [amount, 0],
+  };
+
+  try {
+    const fees = await account?.estimateInvokeFee([call]);
+    const tx = await contract[action]({
+      maxFee: fees?.suggestedMaxFee
+        ? BigInt(fees.suggestedMaxFee) * 2n
+        : undefined,
+    });
+    await argentTMA.provider.waitForTransaction(tx.transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}
+
+export async function executeContractAction_15(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string,
+  amount: number
+) {
+  const decimalToHex = (decimal: number | bigint): string => {
+    const bigDecimal = BigInt(decimal);
+    return `0x${bigDecimal.toString(16)}`;
+  };
+
+  const hex = decimalToHex(amount);
+  const call: Call = {
+    contractAddress: contract.address,
+    entrypoint: action,
+    calldata: [hex, "0x0"],
+  };
+
+  try {
+    const fees = await account?.estimateInvokeFee([call]);
+    const tx = await contract[action]({
+      maxFee: fees?.suggestedMaxFee
+        ? BigInt(fees.suggestedMaxFee) * 2n
+        : undefined,
+    });
+    await argentTMA.provider.waitForTransaction(tx.transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}

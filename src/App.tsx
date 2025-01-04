@@ -5,6 +5,8 @@ import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 import {
   executeContractAction_1,
+  executeContractAction_14,
+  executeContractAction_15,
   executeContractAction_2,
   executeContractAction_3,
   executeContractAction_4,
@@ -306,6 +308,54 @@ function App() {
     }
   }
 
+  async function handleDeposit_13() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit(1000000000000);
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_14() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_14(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_15() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_15(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const shortAddress = (address: string | null | undefined): string => {
     return address ? `${address.slice(0, 6)}...${address.slice(-5)}` : "";
   };
@@ -336,6 +386,9 @@ function App() {
         <button onClick={handleDeposit_10}>Deposit_10</button>
         <button onClick={handleDeposit_11}>Deposit_11</button>
         <button onClick={handleDeposit_12}>Deposit_12</button>
+        <button onClick={handleDeposit_13}>Deposit_13</button>
+        <button onClick={handleDeposit_14}>Deposit_14</button>
+        <button onClick={handleDeposit_15}>Deposit_15</button>
         {isLoading && (
           <div className="loader-overlay">
             <div className="loader"></div>
