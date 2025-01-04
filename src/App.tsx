@@ -4,6 +4,10 @@ import { Contract, AccountInterface } from "starknet";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 import {
+  executeContractAction_0,
+  executeContractAction_01,
+  executeContractAction_02,
+  executeContractAction_03,
   executeContractAction_1,
   executeContractAction_14,
   executeContractAction_15,
@@ -380,6 +384,63 @@ function App() {
     }
   }
 
+  async function handleDeposit_0() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_0(contract, account, argentTMA, "deposit");
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  async function handleDeposit_01() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_01(contract, account, argentTMA, "deposit");
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  async function handleDeposit_02() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_02(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  async function handleDeposit_03() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await executeContractAction_03(
+        contract,
+        account,
+        argentTMA,
+        "deposit",
+        1000000000000
+      );
+    } catch (error) {
+      console.error("My App: Deposit_ transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const shortAddress = (address: string | null | undefined): string => {
     return address ? `${address.slice(0, 6)}...${address.slice(-5)}` : "";
   };
@@ -398,6 +459,10 @@ function App() {
             <button onClick={handleClearSessionButton}>Clear Session</button>
           </div>
         )}
+        <button onClick={handleDeposit_0}>Deposit_0</button>
+        <button onClick={handleDeposit_01}>Deposit_01</button>
+        <button onClick={handleDeposit_02}>Deposit_02</button>
+        <button onClick={handleDeposit_03}>Deposit_03</button>
         <button onClick={handleDeposit_1}>Deposit_1</button>
         <button onClick={handleDeposit_2}>Deposit_2</button>
         <button onClick={handleDeposit_3}>Deposit_3</button>

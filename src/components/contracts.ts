@@ -1,5 +1,5 @@
 import { ArgentTMA, type SessionAccountInterface } from "@argent/tma-wallet";
-import { uint256, type Call, type Contract } from "starknet";
+import { num, RPC, uint256, type Call, type Contract } from "starknet";
 
 export const initWallet = (contractAddress: string) =>
   ArgentTMA.init({
@@ -16,6 +16,228 @@ export const initWallet = (contractAddress: string) =>
       validityDays: 90,
     },
   });
+
+export async function executeContractAction_0(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string
+) {
+  try {
+    const myCall = contract.populate(action, [1000000000000]);
+
+    // const maxQtyGasAuthorized = 1800n;
+    // const maxPriceAuthorizeForOneGas = 20n * 10n ** 12n;
+
+    const estimatedFee1 = await account.estimateInvokeFee([myCall], {
+      version: 3,
+    });
+
+    const resourceBounds = {
+      //   l1_gas: {
+      //     max_amount: num.toHex(maxQtyGasAuthorized),
+      //     max_price_per_unit: num.toHex(maxPriceAuthorizeForOneGas),
+      //   },
+      //   l2_gas: {
+      //     max_amount: num.toHex(0),
+      //     max_price_per_unit: num.toHex(0),
+      //   },
+      ...estimatedFee1.resourceBounds,
+      l1_gas: {
+        ...estimatedFee1.resourceBounds.l1_gas,
+        max_amount: num.toHex(
+          BigInt(
+            parseInt(estimatedFee1.resourceBounds.l1_gas.max_amount, 16) * 2
+          ) // Double the estimated amount
+        ),
+      },
+    };
+
+    const { transaction_hash } = await account.execute(myCall, {
+      version: 3,
+      maxFee: estimatedFee1.suggestedMaxFee, // 10n ** 15n,
+      feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1, // argentTMA.provider.RPC.EDataAvailabilityMode.L1,
+      resourceBounds: resourceBounds,
+    });
+
+    await argentTMA.provider.waitForTransaction(transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}
+
+export async function executeContractAction_01(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string
+) {
+  try {
+    const myCall = contract.populate(action, [
+      BigInt(1000000000000n).toString(),
+    ]);
+
+    // const maxQtyGasAuthorized = 1800n;
+    // const maxPriceAuthorizeForOneGas = 20n * 10n ** 12n;
+
+    const estimatedFee1 = await account.estimateInvokeFee([myCall], {
+      version: 3,
+    });
+
+    const resourceBounds = {
+      //   l1_gas: {
+      //     max_amount: num.toHex(maxQtyGasAuthorized),
+      //     max_price_per_unit: num.toHex(maxPriceAuthorizeForOneGas),
+      //   },
+      //   l2_gas: {
+      //     max_amount: num.toHex(0),
+      //     max_price_per_unit: num.toHex(0),
+      //   },
+      ...estimatedFee1.resourceBounds,
+      l1_gas: {
+        ...estimatedFee1.resourceBounds.l1_gas,
+        max_amount: num.toHex(
+          BigInt(
+            parseInt(estimatedFee1.resourceBounds.l1_gas.max_amount, 16) * 2
+          ) // Double the estimated amount
+        ),
+      },
+    };
+
+    const { transaction_hash } = await account.execute(myCall, {
+      version: 3,
+      maxFee: estimatedFee1.suggestedMaxFee, // 10n ** 15n,
+      feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1, // argentTMA.provider.RPC.EDataAvailabilityMode.L1,
+      resourceBounds: resourceBounds,
+    });
+
+    await argentTMA.provider.waitForTransaction(transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}
+
+export async function executeContractAction_02(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string,
+  amount: number
+) {
+  try {
+    const decimalToHex = (decimal: number | bigint): string => {
+      const bigDecimal = BigInt(decimal);
+      return `0x${bigDecimal.toString(16)}`;
+    };
+
+    const hex = decimalToHex(amount);
+
+    const myCall = contract.populate(action, [hex, "0x0"]);
+
+    // const maxQtyGasAuthorized = 1800n;
+    // const maxPriceAuthorizeForOneGas = 20n * 10n ** 12n;
+
+    const estimatedFee1 = await account.estimateInvokeFee([myCall], {
+      version: 3,
+    });
+
+    const resourceBounds = {
+      //   l1_gas: {
+      //     max_amount: num.toHex(maxQtyGasAuthorized),
+      //     max_price_per_unit: num.toHex(maxPriceAuthorizeForOneGas),
+      //   },
+      //   l2_gas: {
+      //     max_amount: num.toHex(0),
+      //     max_price_per_unit: num.toHex(0),
+      //   },
+      ...estimatedFee1.resourceBounds,
+      l1_gas: {
+        ...estimatedFee1.resourceBounds.l1_gas,
+        max_amount: num.toHex(
+          BigInt(
+            parseInt(estimatedFee1.resourceBounds.l1_gas.max_amount, 16) * 2
+          ) // Double the estimated amount
+        ),
+      },
+    };
+
+    const { transaction_hash } = await account.execute(myCall, {
+      version: 3,
+      maxFee: estimatedFee1.suggestedMaxFee, // 10n ** 15n,
+      feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1, // argentTMA.provider.RPC.EDataAvailabilityMode.L1,
+      resourceBounds: resourceBounds,
+    });
+
+    await argentTMA.provider.waitForTransaction(transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}
+
+export async function executeContractAction_03(
+  contract: Contract,
+  account: SessionAccountInterface,
+  argentTMA: ArgentTMA,
+  action: string,
+  amount: number
+) {
+  try {
+    //   const decimalToHex = (decimal: number | bigint): string => {
+    //     const bigDecimal = BigInt(decimal);
+    //     return `0x${bigDecimal.toString(16)}`;
+    //   };
+
+    //   const hex = decimalToHex(amount);
+
+    const myCall = contract.populate(action, [amount, 0]);
+
+    // const maxQtyGasAuthorized = 1800n;
+    // const maxPriceAuthorizeForOneGas = 20n * 10n ** 12n;
+
+    const estimatedFee1 = await account.estimateInvokeFee([myCall], {
+      version: 3,
+    });
+
+    const resourceBounds = {
+      //   l1_gas: {
+      //     max_amount: num.toHex(maxQtyGasAuthorized),
+      //     max_price_per_unit: num.toHex(maxPriceAuthorizeForOneGas),
+      //   },
+      //   l2_gas: {
+      //     max_amount: num.toHex(0),
+      //     max_price_per_unit: num.toHex(0),
+      //   },
+      ...estimatedFee1.resourceBounds,
+      l1_gas: {
+        ...estimatedFee1.resourceBounds.l1_gas,
+        max_amount: num.toHex(
+          BigInt(
+            parseInt(estimatedFee1.resourceBounds.l1_gas.max_amount, 16) * 2
+          ) // Double the estimated amount
+        ),
+      },
+    };
+
+    const { transaction_hash } = await account.execute(myCall, {
+      version: 3,
+      maxFee: estimatedFee1.suggestedMaxFee, // 10n ** 15n,
+      feeDataAvailabilityMode: RPC.EDataAvailabilityMode.L1, // argentTMA.provider.RPC.EDataAvailabilityMode.L1,
+      resourceBounds: resourceBounds,
+    });
+
+    await argentTMA.provider.waitForTransaction(transaction_hash);
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action}:`, error);
+    return false;
+  }
+}
 
 export async function executeContractAction_1(
   contract: Contract,
