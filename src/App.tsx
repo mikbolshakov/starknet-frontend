@@ -6,8 +6,8 @@ import { initWallet } from "./components/contracts";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 
-const APPROVE_AMOUNT = 3000000000000000000n // parseEther("3"); // BigInt(3000000000000000000n);
-const DEPOSIT_AMOUNT = 1000000000000000000n // parseEther("1"); // BigInt(1000000000000000000n);
+const APPROVE_AMOUNT = 3000000000000000 // parseEther("3"); // BigInt(3000000000000000000n);
+const DEPOSIT_AMOUNT = 1000000000000000 // parseEther("1"); // BigInt(1000000000000000000n);
 const VAULT_ADDRESS =
   "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
 const STRK_ADDRESS =
