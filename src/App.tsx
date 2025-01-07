@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { SessionAccountInterface } from "@argent/tma-wallet";
 import { Contract, AccountInterface } from "starknet";
-// import { parseEther } from "ethers";
+import { parseEther } from "ethers";
 import { initWallet } from "./components/contracts";
 import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
 import "./App.css";
 
-const APPROVE_AMOUNT = 3000000000000000 // parseEther("3"); // BigInt(3000000000000000000n);
-const DEPOSIT_AMOUNT = 1000000000000000 // parseEther("1"); // BigInt(1000000000000000000n);
+const APPROVE_AMOUNT = 3000000000000000; // parseEther("3"); // BigInt(3000000000000000000n);
+const DEPOSIT_AMOUNT = 1000000000000000; // parseEther("1"); // BigInt(1000000000000000000n);
 const VAULT_ADDRESS =
   "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
 const STRK_ADDRESS =
@@ -89,7 +89,43 @@ function App() {
     try {
       await contract.deposit(DEPOSIT_AMOUNT);
     } catch (error) {
-      console.error("My App: Deposit_ transaction failed:", error);
+      console.error("My App: Deposit transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_1() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit(parseEther("1"));
+    } catch (error) {
+      console.error("My App: Deposit transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_2() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit(BigInt(1000000000000000000n));
+    } catch (error) {
+      console.error("My App: Deposit transaction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeposit_3() {
+    if (!contract || !account) return;
+    setIsLoading(true);
+    try {
+      await contract.deposit(BigInt(1000000000000000000n).toString());
+    } catch (error) {
+      console.error("My App: Deposit transaction failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -114,6 +150,9 @@ function App() {
           </div>
         )}
         <button onClick={handleDeposit}>Deposit</button>
+        <button onClick={handleDeposit_1}>Deposit1</button>
+        <button onClick={handleDeposit_2}>Deposit2</button>
+        <button onClick={handleDeposit_3}>Deposit3</button>
         {isLoading && (
           <div className="loader-overlay">
             <div className="loader"></div>
