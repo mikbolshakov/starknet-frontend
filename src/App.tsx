@@ -12,7 +12,7 @@ import VAULT from "./ABI/VAULT_ABI.json";
 import ERC20 from "./ABI/ERC20_ABI.json";
 import "./App.css";
 
-const APPROVE_AMOUNT = BigInt(2000000000000000000n).toString(); // 2 STRK
+const APPROVE_AMOUNT = BigInt(6000000000000000000n).toString(); // 6 STRK
 const WITHDRAW_AMOUNT = uint256.bnToUint256(500000000000000000n); // 0.5 STRK
 const VAULT_ADDRESS =
   "0x0023611dcff5bd0be494391d54c690c413e8fce631432c21cd629bbb62641e0e";
@@ -91,20 +91,21 @@ function App() {
       contract = undefined;
     } catch (error) {
       console.error("Failed to clear session:", error);
+      alert("Failed to clear session");
     } finally {
       setIsLoading(false);
     }
   };
 
   async function handleDeposit() {
-    console.log("contract", contract?.address);
-    console.log("account", account?.address);
     if (!contract || !account) return;
     setIsLoading(true);
     try {
       await contract.deposit();
+      alert("Successfully deposited");
     } catch (error) {
       console.error("Deposit transaction failed:", error);
+      alert("Deposit transaction failed");
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +115,6 @@ function App() {
     setIsLoading(true);
     try {
       STRK_TOKEN.connect(ADMIN_ACCOUNT);
-      console.log(`Invoke Tx - Transfer 1 tokens to erc20 contract...`);
       const sss3 = STRK_TOKEN.populate("transfer", {
         recipient: account?.address,
         amount: WITHDRAW_AMOUNT,
@@ -122,10 +122,11 @@ function App() {
       const { transaction_hash: transferTxHash } = await ADMIN_ACCOUNT.execute(
         sss3
       );
-      console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`);
       await provider.waitForTransaction(transferTxHash);
+      alert("Successfully withdrawn");
     } catch (error) {
       console.error("Withdraw transaction failed:", error);
+      alert("Withdraw transaction failed");
     } finally {
       setIsLoading(false);
     }
