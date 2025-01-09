@@ -100,6 +100,8 @@ function App() {
   };
 
   async function handleDeposit() {
+    console.log("vaultContract", vaultContract?.address)
+    console.log("account", account?.address)
     if (!vaultContract || !account) return;
     setIsLoading(true);
     try {
