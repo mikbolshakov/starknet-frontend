@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import { SessionAccountInterface } from "@argent/tma-wallet";
-import { Contract, AccountInterface } from "starknet";
-import { parseEther } from "ethers";
+import starknet from "starknet";
 import { initWallet } from "./components/contracts";
-import artifact from "./ABI/argent_contracts_Vault.contract_class.json";
+import VAULT from "./ABI/VAULT_ABI.json";
+import ERC20 from "./ABI/ERC20_ABI.json";
 import "./App.css";
 
-const APPROVE_AMOUNT = 3000000000000000; // parseEther("3"); // BigInt(3000000000000000000n);
-const DEPOSIT_AMOUNT = 1000000000000000; // parseEther("1"); // BigInt(1000000000000000000n);
+const APPROVE_AMOUNT = BigInt(2000000000000000000n).toString(); // 2 STRK
+const WITHDRAW_AMOUNT = starknet.uint256.bnToUint256(500000000000000000n); // 0.5 STRK
 const VAULT_ADDRESS =
-  "0x049ecce809794c9bfbf880959989aa9d44cba35aebe1c6af360be09c7ad87ebd";
+  "0x0023611dcff5bd0be494391d54c690c413e8fce631432c21cd629bbb62641e0e";
 const STRK_ADDRESS =
   "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
-const ABI = artifact.abi;
+
+const provider = new starknet.RpcProvider({
+  nodeUrl: import.meta.env.VITE_RPC_URL,
+});
+const privateKey = import.meta.env.VITE_ADMIN_PRIVATE_KEY;
+const accountAddress = import.meta.env.VITE_ADMIN_ADDRESS;
+
+const ADMIN_ACCOUNT = new starknet.Account(
+  provider,
+  accountAddress,
+  privateKey
+);
+const STRK_TOKEN = new starknet.Contract(ERC20.abi, STRK_ADDRESS, provider);
 
 const argentTMA = initWallet(VAULT_ADDRESS);
 
-let account: SessionAccountInterface | undefined;
-let isConnected = false;
-let contract: Contract | undefined;
-
 function App() {
+  const [account, setAccount] = useState<SessionAccountInterface | undefined>();
+  const [vaultContract, setVaultContract] = useState<
+    starknet.Contract | undefined
+  >();
   const [isLoading, setIsLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     async function connect() {
@@ -30,18 +43,21 @@ function App() {
         console.log("res", res);
         if (!res) return;
 
-        account = res.account;
-        if (account.getSessionStatus() !== "VALID") return;
+        setAccount(res.account);
 
-        contract = new Contract(
-          ABI,
-          VAULT_ADDRESS,
-          account as unknown as AccountInterface
+        if (account?.getSessionStatus() !== "VALID") return;
+
+        setVaultContract(
+          new starknet.Contract(
+            VAULT.abi,
+            VAULT_ADDRESS,
+            account as unknown as starknet.AccountInterface
+          )
         );
 
-        isConnected = true;
+        setIsConnected(true);
       } catch (err) {
-        console.error("My App: Failed to useEffect connect:", err);
+        console.error("Failed to useEffect connect:", err);
       }
     }
 
@@ -61,9 +77,9 @@ function App() {
           },
         ],
       });
-      isConnected = true;
+      setIsConnected(true);
     } catch (error) {
-      console.error("My App: Failed to connect:", error);
+      console.error("Failed to connect:", error);
     } finally {
       setIsLoading(false);
     }
@@ -73,59 +89,44 @@ function App() {
     setIsLoading(true);
     try {
       await argentTMA.clearSession();
-      account = undefined;
-      isConnected = false;
-      contract = undefined;
+      setAccount(undefined);
+      setIsConnected(false);
+      setVaultContract(undefined);
     } catch (error) {
-      console.error("My App: Failed to clear session:", error);
+      console.error("Failed to clear session:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   async function handleDeposit() {
-    if (!contract || !account) return;
+    if (!vaultContract || !account) return;
     setIsLoading(true);
     try {
-      await contract.deposit(DEPOSIT_AMOUNT);
+      await vaultContract.deposit();
     } catch (error) {
-      console.error("My App: Deposit transaction failed:", error);
+      console.error("Deposit transaction failed:", error);
     } finally {
       setIsLoading(false);
     }
   }
 
-  async function handleDeposit_1() {
-    if (!contract || !account) return;
+  async function handleWithdraw() {
     setIsLoading(true);
     try {
-      await contract.deposit(parseEther("1"));
+      STRK_TOKEN.connect(ADMIN_ACCOUNT);
+      console.log(`Invoke Tx - Transfer 1 tokens to erc20 contract...`);
+      const sss3 = STRK_TOKEN.populate("transfer", {
+        recipient: account?.address,
+        amount: WITHDRAW_AMOUNT,
+      });
+      const { transaction_hash: transferTxHash } = await ADMIN_ACCOUNT.execute(
+        sss3
+      );
+      console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`);
+      await provider.waitForTransaction(transferTxHash);
     } catch (error) {
-      console.error("My App: Deposit transaction failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleDeposit_2() {
-    if (!contract || !account) return;
-    setIsLoading(true);
-    try {
-      await contract.deposit(BigInt(1000000000000000000n));
-    } catch (error) {
-      console.error("My App: Deposit transaction failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleDeposit_3() {
-    if (!contract || !account) return;
-    setIsLoading(true);
-    try {
-      await contract.deposit(BigInt(1000000000000000000n).toString());
-    } catch (error) {
-      console.error("My App: Deposit transaction failed:", error);
+      console.error("Withdraw transaction failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -138,7 +139,7 @@ function App() {
   return (
     <>
       <div>
-        <h2>My App TMA Game</h2>
+        <h2>TMA Game</h2>
         {!isConnected && <button onClick={handleConnectButton}>Connect</button>}
 
         {isConnected && (
@@ -150,9 +151,7 @@ function App() {
           </div>
         )}
         <button onClick={handleDeposit}>Deposit</button>
-        <button onClick={handleDeposit_1}>Deposit1</button>
-        <button onClick={handleDeposit_2}>Deposit2</button>
-        <button onClick={handleDeposit_3}>Deposit3</button>
+        <button onClick={handleWithdraw}>Withdraw</button>
         {isLoading && (
           <div className="loader-overlay">
             <div className="loader"></div>

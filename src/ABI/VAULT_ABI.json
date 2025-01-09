@@ -20,7 +20,7 @@
         {
           "type": "function",
           "name": "deposit",
-          "inputs": [{ "name": "amount", "type": "core::integer::u256" }],
+          "inputs": [],
           "outputs": [],
           "state_mutability": "external"
         },
@@ -30,6 +30,20 @@
           "inputs": [],
           "outputs": [],
           "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "set_deposit_amount",
+          "inputs": [{ "name": "amount", "type": "core::integer::u256" }],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_deposit_amount",
+          "inputs": [],
+          "outputs": [{ "type": "core::integer::u256" }],
+          "state_mutability": "view"
         },
         {
           "type": "function",
@@ -51,7 +65,16 @@
         {
           "name": "admin",
           "type": "core::starknet::contract_address::ContractAddress"
-        }
+        },
+        { "name": "amount", "type": "core::integer::u256" }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "argent_contracts::vault::Vault::Changed",
+      "kind": "struct",
+      "members": [
+        { "name": "new_amount", "type": "core::integer::u256", "kind": "data" }
       ]
     },
     {
@@ -80,6 +103,11 @@
       "name": "argent_contracts::vault::Vault::Event",
       "kind": "enum",
       "variants": [
+        {
+          "name": "Changed",
+          "type": "argent_contracts::vault::Vault::Changed",
+          "kind": "nested"
+        },
         {
           "name": "Deposited",
           "type": "argent_contracts::vault::Vault::Deposited",
