@@ -23,19 +23,19 @@ const provider = new RpcProvider({
   nodeUrl: import.meta.env.VITE_RPC_URL,
 });
 const privateKey = import.meta.env.VITE_ADMIN_PRIVATE_KEY;
-const accountAddress = import.meta.env.VITE_ADMIN_ADDRESS;
+const adminAddress = import.meta.env.VITE_ADMIN_ADDRESS;
 
-const ADMIN_ACCOUNT = new Account(provider, accountAddress, privateKey);
+const ADMIN_ACCOUNT = new Account(provider, adminAddress, privateKey);
 const STRK_TOKEN = new Contract(ERC20.abi, STRK_ADDRESS, provider);
 
 const argentTMA = initWallet(VAULT_ADDRESS);
 
+let account: SessionAccountInterface | undefined;
+let isConnected = false;
 let contract: Contract | undefined;
 
 function App() {
-  const [account, setAccount] = useState<SessionAccountInterface | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     async function connect() {
@@ -44,17 +44,15 @@ function App() {
         console.log("res", res);
         if (!res) return;
 
-        setAccount(res.account);
-
-        if (account?.getSessionStatus() !== "VALID") return;
-
+        account = res.account;
+        if (account.getSessionStatus() !== "VALID") return;
         contract = new Contract(
           VAULT.abi,
           VAULT_ADDRESS,
           account as unknown as AccountInterface
         );
 
-        setIsConnected(true);
+        isConnected = true;
       } catch (err) {
         console.error("Failed to useEffect connect:", err);
       }
@@ -76,7 +74,7 @@ function App() {
           },
         ],
       });
-      setIsConnected(true);
+      isConnected = true;
     } catch (error) {
       console.error("Failed to connect:", error);
     } finally {
@@ -88,8 +86,8 @@ function App() {
     setIsLoading(true);
     try {
       await argentTMA.clearSession();
-      setAccount(undefined);
-      setIsConnected(false);
+      account = undefined;
+      isConnected = false;
       contract = undefined;
     } catch (error) {
       console.error("Failed to clear session:", error);
