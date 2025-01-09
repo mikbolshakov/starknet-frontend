@@ -30,9 +30,10 @@ const STRK_TOKEN = new Contract(ERC20.abi, STRK_ADDRESS, provider);
 
 const argentTMA = initWallet(VAULT_ADDRESS);
 
+let contract: Contract | undefined;
+
 function App() {
   const [account, setAccount] = useState<SessionAccountInterface | undefined>();
-  const [vaultContract, setVaultContract] = useState<Contract | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -47,12 +48,10 @@ function App() {
 
         if (account?.getSessionStatus() !== "VALID") return;
 
-        setVaultContract(
-          new Contract(
-            VAULT.abi,
-            VAULT_ADDRESS,
-            account as unknown as AccountInterface
-          )
+        contract = new Contract(
+          VAULT.abi,
+          VAULT_ADDRESS,
+          account as unknown as AccountInterface
         );
 
         setIsConnected(true);
@@ -91,7 +90,7 @@ function App() {
       await argentTMA.clearSession();
       setAccount(undefined);
       setIsConnected(false);
-      setVaultContract(undefined);
+      contract = undefined;
     } catch (error) {
       console.error("Failed to clear session:", error);
     } finally {
@@ -100,12 +99,12 @@ function App() {
   };
 
   async function handleDeposit() {
-    console.log("vaultContract", vaultContract?.address)
-    console.log("account", account?.address)
-    if (!vaultContract || !account) return;
+    console.log("contract", contract?.address);
+    console.log("account", account?.address);
+    if (!contract || !account) return;
     setIsLoading(true);
     try {
-      await vaultContract.deposit();
+      await contract.deposit();
     } catch (error) {
       console.error("Deposit transaction failed:", error);
     } finally {
