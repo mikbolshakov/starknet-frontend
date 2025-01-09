@@ -1,7 +1,7 @@
 FROM node:18 as node-builder
 
-ENV VITE_TELEGRAM_APP_NAME=ArgentCon
-ENV VITE_TELEGRAM_APP_URL=https://t.me/SatoshiTestENVdev_bot/ArgentCon
+ENV VITE_TELEGRAM_APP_NAME=ArgentTest
+ENV VITE_TELEGRAM_APP_URL=https://t.me/ArgentTestingBot/ArgentTest
 ENV VITE_RPC_URL=https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/Ua6UIZkJ1gNmt3-vojnhRddToypP2z50
 ENV VITE_ADMIN_PRIVATE_KEY=0x078c3e3ba9930852a98a64c810fb07de768549ed49f15326e8429e8de508d8f8
 ENV VITE_ADMIN_ADDRESS=0x001228928b53b8a46F8377160D5E0d886C23BabD914B6C9652caFeCA1f285e9d
