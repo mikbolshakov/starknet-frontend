@@ -82,6 +82,175 @@ function App() {
     }
   };
 
+  const handleConnectButton1 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: BigInt(1000000000000000000n),
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton2 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: BigInt(1000000000000000000n).toString(),
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton3 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: 1000000000000000000n,
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton4 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: 10000000000000,
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton5 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: [1000000000000, 0],
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton6 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: [1000000000000, 0],
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConnectButton7 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: ["0xe8d4a51000", "0x0"],
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  const handleConnectButton8 = async () => {
+    setIsLoading(true);
+    try {
+      await argentTMA.requestConnection({
+        callbackData: "vault_connection",
+        approvalRequests: [
+          {
+            tokenAddress: STRK_ADDRESS,
+            amount: ["0xe8d4a51000", "0x0"],
+            spender: VAULT_ADDRESS,
+          },
+        ],
+      });
+      isConnected = true;
+    } catch (error) {
+      console.error("Failed to connect:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleClearSessionButton = async () => {
     setIsLoading(true);
     try {
@@ -141,6 +310,14 @@ function App() {
       <div>
         <h2>TMA Game</h2>
         {!isConnected && <button onClick={handleConnectButton}>Connect</button>}
+        {!isConnected && <button onClick={handleConnectButton1}>Connect1</button>}
+        {!isConnected && <button onClick={handleConnectButton2}>Connect2</button>}
+        {!isConnected && <button onClick={handleConnectButton3}>Connect3</button>}
+        {!isConnected && <button onClick={handleConnectButton4}>Connect4</button>}
+        {!isConnected && <button onClick={handleConnectButton5}>Connect5</button>}
+        {!isConnected && <button onClick={handleConnectButton6}>Connect6</button>}
+        {!isConnected && <button onClick={handleConnectButton7}>Connect7</button>}
+        {!isConnected && <button onClick={handleConnectButton8}>Connect8</button>}
 
         {isConnected && (
           <div>
